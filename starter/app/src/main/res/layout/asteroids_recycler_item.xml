@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="asteroid"
+            type="com.udacity.asteroidradar.database.Asteroid" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/dp_64"
+        android:padding="@dimen/dp_16">
+
+        <TextView
+            android:id="@+id/asteroid_name_tv"
+            style="@style/LargeBoldTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{asteroid.codename}"
+            app:layout_constraintEnd_toStartOf="@+id/asteroid_hazardous_state_iv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Asteroid name" />
+
+        <TextView
+            android:id="@+id/asteroid_approach_date_tv"
+            style="@style/LargeTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@{asteroid.closeApproachDate}"
+            app:layout_constraintEnd_toStartOf="@+id/asteroid_hazardous_state_iv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/asteroid_name_tv"
+            tools:text="2020-02-08" />
+
+        <ImageView
+            android:id="@+id/asteroid_hazardous_state_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:statusIcon="@{asteroid.potentiallyHazardous}"
+            tools:srcCompat="@drawable/ic_status_potentially_hazardous" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
