@@ -26,9 +26,10 @@ class AsteroidRadarApplication : Application() {
     }
 
     private fun setupRecurringWork() {
-        val constraints = Constraints.Builder()
+        val refreshDataWorkerConstraint = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.UNMETERED)
             .setRequiresBatteryNotLow(true)
+            .setRequiresCharging(true)
             .apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     setRequiresDeviceIdle(true)
@@ -43,11 +44,12 @@ class AsteroidRadarApplication : Application() {
                 }
             }.build()
 
-        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.DAYS)
-            .setConstraints(constraints)
-            .build()
+        val refreshDataRepeatingRequest =
+            PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.DAYS)
+                .setConstraints(refreshDataWorkerConstraint)
+                .build()
 
-        val deleteObsoleteDataRequest =
+        val deleteObsoleteDataRepeatingRequest =
             PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.DAYS)
                 .setConstraints(deleteObsoleteDataWorkerConstraints)
                 .build()
@@ -56,13 +58,13 @@ class AsteroidRadarApplication : Application() {
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             RefreshDataWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
-            repeatingRequest
+            refreshDataRepeatingRequest
         )
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             DeleteObsoleteDataWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
-            deleteObsoleteDataRequest
+            deleteObsoleteDataRepeatingRequest
         )
     }
 }
