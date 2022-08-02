@@ -1,10 +1,7 @@
 package com.udacity.asteroidradar.main
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.udacity.asteroidradar.api.getSeventhDayDate
 import com.udacity.asteroidradar.api.getTodayDate
 import com.udacity.asteroidradar.data.AsteroidsRepository
@@ -13,18 +10,22 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(repository: AsteroidsRepository) : ViewModel() {
 
-
-    init {
-        viewModelScope.launch {
-            repository.refreshCachedAsteroids(getTodayDate(), getSeventhDayDate())
-            repository.getImageOfTheDay()
-        }
-    }
-
     val asteroids = repository.asteroids
     val imageOfTheDay = repository.imageOfTheDay
     val todayDate
         get() = MutableLiveData(getTodayDate())
+    private val _showLoading = MutableLiveData(false)
+    val showLoading: LiveData<Boolean>
+        get() = _showLoading
+
+    init {
+        viewModelScope.launch {
+            _showLoading.value = true
+            repository.refreshCachedAsteroids(getTodayDate(), getSeventhDayDate())
+            repository.getImageOfTheDay()
+            _showLoading.value = false
+        }
+    }
 
     /**
      * Factory for constructing MainViewModel with parameter
