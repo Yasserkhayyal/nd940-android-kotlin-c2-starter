@@ -8,7 +8,7 @@ import com.udacity.asteroidradar.data.AsteroidsRepository
 import com.udacity.asteroidradar.database.getDatabase
 import kotlinx.coroutines.launch
 
-class MainViewModel(repository: AsteroidsRepository) : ViewModel() {
+class MainViewModel(private val repository: AsteroidsRepository) : ViewModel() {
 
     val asteroids = repository.asteroids
     val imageOfTheDay = repository.imageOfTheDay
@@ -20,11 +20,18 @@ class MainViewModel(repository: AsteroidsRepository) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            _showLoading.value = true
-            repository.refreshCachedAsteroids(getTodayDate(), getSeventhDayDate())
-            repository.getImageOfTheDay()
-            _showLoading.value = false
+            if (asteroids.value.isNullOrEmpty()) {
+                _showLoading.value = true
+                repository.refreshCachedAsteroids(getTodayDate(), getSeventhDayDate())
+                repository.getImageOfTheDay()
+                _showLoading.value = false
+            }
         }
+    }
+
+
+    fun showFilteredResults(filterType: FilterType) = viewModelScope.launch {
+        repository.getFilteredResults(filterType)
     }
 
     /**
