@@ -14,7 +14,9 @@ android {
         targetSdkVersion 32
         versionCode 1
         versionName "1.0"
-        buildConfigField "String", "API_KEY", "\"F3FSrDIMfcONcwvymqyU2cNUqMZiNG28s5YN5BxW\""
+        def localProperties = new Properties()
+        localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+        buildConfigField "String", "API_KEY", "\"${localProperties['API_KEY']}\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
